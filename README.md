@@ -1,3 +1,4 @@
+```
 <Hallgató neve>
 <Neptun kódja>
 Kliensoldali webprogramozás - beadandó
@@ -9,7 +10,7 @@ Az Eötvös Loránd Tudományegyetem Hallgatói Követelményrendszere
 amíg egy hallgató egy másik hallgató munkáját - vagy legalábbis annak jelentős részét -
 saját munkájaként mutatja be, az fegyelmi vétségnek számít.
 A fegyelmi vétség legsúlyosabb következménye a hallgató elbocsátása az egyetemről.
-
+```
 ## Pontozás
 
 - [ ] React használata (kötelező)
