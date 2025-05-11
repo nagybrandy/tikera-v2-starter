@@ -15,9 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->string('image_path');
+            $table->string('image_path', 2048);
             $table->integer('duration')->comment('Duration in minutes');
-            $table->string('director');
             $table->string('genre');
             $table->year('release_year');
             $table->timestamps();

@@ -79,21 +79,17 @@ class MovieController extends Controller
             $request->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'image_path' => 'required|string|url',
                 'duration' => 'required|integer|min:1',
-                'director' => 'required|string|max:255',
                 'genre' => 'required|string|max:255',
                 'release_year' => 'required|integer|min:1900|max:' . (date('Y') + 1)
             ]);
 
-            $imagePath = $request->file('image')->store('movies', 'public');
-
             $movie = Movie::create([
                 'title' => $request->title,
                 'description' => $request->description,
-                'image_path' => $imagePath,
+                'image_path' => $request->image_path,
                 'duration' => $request->duration,
-                'director' => $request->director,
                 'genre' => $request->genre,
                 'release_year' => $request->release_year
             ]);
@@ -170,24 +166,13 @@ class MovieController extends Controller
         $request->validate([
             'title' => 'string|max:255',
             'description' => 'string',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_path' => 'string|url',
             'duration' => 'integer|min:1',
-            'director' => 'string|max:255',
             'genre' => 'string|max:255',
             'release_year' => 'integer|min:1900|max:' . (date('Y') + 1)
         ]);
 
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($movie->image_path) {
-                Storage::disk('public')->delete($movie->image_path);
-            }
-            $imagePath = $request->file('image')->store('movies', 'public');
-            $movie->image_path = $imagePath;
-        }
-
-        $movie->update($request->except('image'));
-
+        $movie->update($request->all());
         return new MovieResource($movie);
     }
 
@@ -196,10 +181,6 @@ class MovieController extends Controller
      */
     public function destroy(Movie $movie)
     {
-        if ($movie->image_path) {
-            Storage::disk('public')->delete($movie->image_path);
-        }
-        
         $movie->delete();
         return response()->json(null, 204);
     }

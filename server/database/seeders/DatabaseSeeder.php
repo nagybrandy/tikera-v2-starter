@@ -49,73 +49,65 @@ class DatabaseSeeder extends Seeder
                 'title' => 'Dune: Part Two',
                 'description' => 'Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.',
                 'duration' => 166,
-                'director' => 'Denis Villeneuve',
                 'genre' => 'Sci-Fi',
                 'release_year' => 2024,
-                'image_path' => 'movies/dune.jpg'
+                'image_path' => 'https://api-tikera.codence.hu/public/storage/movies/dune.jpg'
             ],
             [
                 'title' => 'Poor Things',
                 'description' => 'The incredible tale about the fantastical evolution of Bella Baxter, a young woman brought back to life by the brilliant and unorthodox scientist Dr. Godwin Baxter.',
                 'duration' => 141,
-                'director' => 'Yorgos Lanthimos',
                 'genre' => 'Drama',
                 'release_year' => 2024,
-                'image_path' => 'movies/poor-things.jpg'
+                'image_path' => 'https://api-tikera.codence.hu/public/storage/movies/poor-things.jpg'
             ],
             [
                 'title' => 'Oppenheimer',
                 'description' => 'The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.',
                 'duration' => 180,
-                'director' => 'Christopher Nolan',
                 'genre' => 'Drama',
                 'release_year' => 2023,
-                'image_path' => 'movies/oppenheimer.jpg'
+                'image_path' => 'https://api-tikera.codence.hu/public/storage/movies/oppenheimer.jpg'
             ],
             [
                 'title' => 'Godzilla x Kong: The New Empire',
                 'description' => 'Two ancient titans, Godzilla and Kong, clash in an epic battle as humans unravel their intertwined origins and connection to Skull Island\'s mysteries.',
                 'duration' => 115,
-                'director' => 'Adam Wingard',
                 'genre' => 'Action',
                 'release_year' => 2024,
-                'image_path' => 'movies/godzilla-kong.jpg'
+                'image_path' => 'https://api-tikera.codence.hu/public/storage/movies/godzilla-kong.jpg'
             ],
             [
                 'title' => 'Civil War',
                 'description' => 'In a near-future America, a civil war is unfolding as journalists try to navigate the dangerous landscape.',
                 'duration' => 109,
-                'director' => 'Alex Garland',
                 'genre' => 'Action',
                 'release_year' => 2024,
-                'image_path' => 'movies/civil-war.jpg'
+                'image_path' => 'https://api-tikera.codence.hu/public/storage/movies/civil-war.jpg'
             ],
             [
                 'title' => 'Ghostbusters: Frozen Empire',
                 'description' => 'When the discovery of an ancient artifact unleashes an evil force, Ghostbusters new and old must join forces to protect their home and save the world from a second Ice Age.',
                 'duration' => 115,
-                'director' => 'Gil Kenan',
                 'genre' => 'Comedy',
                 'release_year' => 2024,
-                'image_path' => 'movies/ghostbusters.jpg'
+                'image_path' => 'https://api-tikera.codence.hu/public/storage/movies/ghostbusters.jpg'
             ],
             [
                 'title' => 'Inside Out 2',
                 'description' => 'Follow Riley in her teenage years as new emotions join Joy, Sadness, Anger, Fear, and Disgust in headquarters.',
                 'duration' => 100,
-                'director' => 'Kelsey Mann',
                 'genre' => 'Animation',
                 'release_year' => 2024,
-                'image_path' => 'movies/inside-out-2.jpg'
+                'image_path' => 'https://api-tikera.codence.hu/public/storage/movies/inside-out-2.jpg'
             ],
             [
                 'title' => 'Kung Fu Panda 4',
                 'description' => 'Po must train a new warrior when he\'s chosen to become the spiritual leader of the Valley of Peace.',
                 'duration' => 94,
-                'director' => 'Mike Mitchell',
                 'genre' => 'Animation',
                 'release_year' => 2024,
-                'image_path' => 'movies/kung-fu-panda-4.jpg'
+                'image_path' => 'https://api-tikera.codence.hu/public/storage/movies/kung-fu-panda-4.jpg'
             ],
         ];
 

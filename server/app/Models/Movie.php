@@ -14,9 +14,13 @@ class Movie extends Model
         'description',
         'image_path',
         'duration',
-        'director',
         'genre',
         'release_year'
+    ];
+
+    protected $casts = [
+        'duration' => 'integer',
+        'release_year' => 'integer'
     ];
 
     public function screenings()
