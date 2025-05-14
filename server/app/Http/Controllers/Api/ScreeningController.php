@@ -40,7 +40,7 @@ class ScreeningController extends Controller
             $data = $request->all();
             $carbonDate = Carbon::parse($data['date']);
             $data['week_number'] = $carbonDate->weekOfYear;
-            $data['week_day'] = $carbonDate->format('l');
+            $data['week_day'] = $carbonDate->isoWeekday();
 
             // Check for time conflicts in the same room (logic may need to be adapted for string time)
             $conflictingScreenings = Screening::where('room_id', $request->room_id)
