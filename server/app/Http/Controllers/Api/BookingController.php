@@ -94,7 +94,7 @@ class BookingController extends Controller
             $formattedSeats = array_map(function($seat) {
                 return [
                     'row' => (int)$seat['row'],
-                    'number' => (int)$seat['number']
+                    'seat' => (int)$seat['number']
                 ];
             }, $request->seats);
 
