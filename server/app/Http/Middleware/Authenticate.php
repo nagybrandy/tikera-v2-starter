@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\ApiResponse;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Http\Request;
 
@@ -12,10 +13,9 @@ class Authenticate extends Middleware
      */
     protected function unauthenticated($request, array $guards)
     {
-        abort(response()->json([
-            'message' => 'You need to be authenticated to access this route',
-            'status' => 401
-        ], 401));
+        abort(ApiResponse::error(
+            'You need to be authenticated to access this route',
+            401));
     }
 
     /**

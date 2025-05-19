@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Models\Movie;
 use App\Http\Resources\MovieResource;
+use App\Models\Movie;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class MovieController extends Controller
@@ -30,7 +29,7 @@ class MovieController extends Controller
 
         $movies = $query->get();
 
-        return response()->json($movies->map(function ($movie) {
+        return ApiResponse::success($movies->map(function ($movie) {
             return [
                 'id' => $movie->id,
                 'title' => $movie->title,
@@ -94,23 +93,20 @@ class MovieController extends Controller
                 'release_year' => $request->release_year
             ]);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Movie added successfully!',
-                'data' => new MovieResource($movie)
-            ], 201);
+            return ApiResponse::success(
+                new MovieResource($movie),
+                'Movie added successfully!',
+            201);
         } catch (ValidationException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Movie addition failed due to validation errors',
-                'errors' => $e->errors()
-            ], 422);
+            return ApiResponse::error(
+            'Movie addition failed due to validation errors: ',
+            422,
+            $e->errors());
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to add movie. Please try again later.',
-                'error' => $e->getMessage()
-            ], 500);
+            return ApiResponse::error(
+                'Failed to add movie. Please try again later.',
+                500,
+                $e->getMessage());
         }
     }
 
@@ -120,7 +116,7 @@ class MovieController extends Controller
     public function show(Movie $movie)
     {
         $movie->load(['screenings.room', 'screenings.bookings']);
-        return response()->json([
+        return ApiResponse::success([
             'id' => $movie->id,
             'title' => $movie->title,
             'description' => $movie->description,
@@ -173,7 +169,7 @@ class MovieController extends Controller
         ]);
 
         $movie->update($request->all());
-        return new MovieResource($movie);
+        return ApiResponse::success(new MovieResource($movie));
     }
 
     /**
@@ -182,7 +178,7 @@ class MovieController extends Controller
     public function destroy(Movie $movie)
     {
         $movie->delete();
-        return response()->json(null, 204);
+        return ApiResponse::success(null, "OK", 204);
     }
 
     /**
@@ -193,10 +189,10 @@ class MovieController extends Controller
         $weekNumber = $request->query('week_number');
         
         if (!$weekNumber) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Week number is required'
-            ], 400);
+            return ApiResponse::error(
+                'Week number is required',
+                400
+            );
         }
 
         $movies = Movie::with(['screenings' => function ($query) use ($weekNumber) {
@@ -204,7 +200,7 @@ class MovieController extends Controller
                   ->with(['room', 'bookings']);
         }])->get();
 
-        return response()->json($movies->map(function ($movie) {
+        return ApiResponse::success($movies->map(function ($movie) {
             return [
                 'id' => $movie->id,
                 'title' => $movie->title,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Room;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class RoomController extends Controller
     public function index()
     {
         $rooms = Room::with('screenings')->get();
-        return response()->json($rooms);
+        return ApiResponse::success($rooms);
     }
 
     /**
@@ -29,7 +30,7 @@ class RoomController extends Controller
         ]);
 
         $room = Room::create($request->all());
-        return response()->json($room, 201);
+        return ApiResponse::success($room, 'OK', 201);
     }
 
     /**
@@ -37,7 +38,7 @@ class RoomController extends Controller
      */
     public function show(Room $room)
     {
-        return response()->json($room->load('screenings'));
+        return ApiResponse::success($room->load('screenings'));
     }
 
     /**
@@ -52,7 +53,7 @@ class RoomController extends Controller
         ]);
 
         $room->update($request->all());
-        return response()->json($room);
+        return ApiResponse::success($room);
     }
 
     /**
@@ -61,6 +62,6 @@ class RoomController extends Controller
     public function destroy(Room $room)
     {
         $room->delete();
-        return response()->json(null, 204);
+        return ApiResponse::success(null, 'OK', 204);
     }
 }
