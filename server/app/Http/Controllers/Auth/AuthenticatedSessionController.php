@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -20,7 +20,7 @@ class AuthenticatedSessionController extends Controller
             $user = $request->user();
             $token = $user->createToken('auth-token')->plainTextToken;
 
-            return response()->json([
+            return ApiResponse::success([
                 'status' => 'success',
                 'message' => 'Login successful',
                 'data' => [
@@ -34,17 +34,15 @@ class AuthenticatedSessionController extends Controller
                 ]
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid credentials',
-                'errors' => $e->errors()
-            ], 401);
+            return ApiResponse::error(
+                'Invalid credentials',
+                401,
+                $e->errors());
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Login failed',
-                'error' => $e->getMessage()
-            ], 500);
+            return ApiResponse::error(
+                'Login failed',
+                500,
+                $e->getMessage());
         }
     }
 
@@ -56,16 +54,12 @@ class AuthenticatedSessionController extends Controller
         try {
             $request->user()->currentAccessToken()->delete();
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Logged out successfully'
-            ]);
+            return ApiResponse::success();
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Logout failed',
-                'error' => $e->getMessage()
-            ], 500);
+            return ApiResponse::error(
+                'Logout failed',
+                500,
+                $e->getMessage());
         }
     }
 }

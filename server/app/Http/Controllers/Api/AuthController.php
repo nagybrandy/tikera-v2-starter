@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -33,78 +33,82 @@ class AuthController extends Controller
             // Create new token
             $token = $user->createToken('auth_token')->plainTextToken;
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Successfully registered',
-                'data' => [
+            return ApiResponse::success(
+                 [
                     'user' => $user,
                     'token' => $token,
-                ]
-            ], 201);
+                ],
+                'OK',
+            201);
         } catch (ValidationException $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Registration failed due to validation errors',
-                'errors' => $e->errors()
-            ], 422);
+            return ApiResponse::error(
+               'Registration failed due to validation errors',
+                422,
+                $e->errors()
+            );
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Registration failed. Please try again later.',
-                'error' => $e->getMessage()
-            ], 500);
+            return ApiResponse::error(
+                'Registration failed. Please try again later.',
+                500,
+                $e->getMessage()
+            );
         }
     }
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        try
+        {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid credentials'
-            ], 401);
+            if (!Auth::attempt($request->only('email', 'password')))
+            {
+                return ApiResponse::error(
+                    'Invalid credentials',
+                    401
+                );
+            }
+
+            $user = Auth::user();
+
+            // Delete any existing tokens
+            $user->tokens()->delete();
+
+            // Create new token
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return ApiResponse::success(
+                [
+                    'user' => $user,
+                    'token' => $token,
+                ]
+            );
+        } catch (ValidationException) {
+            return ApiResponse::error(
+                'Invalid credentials',
+                401
+            );
+        } catch (\Exception $e) {
+            return ApiResponse::error(
+                'Logon failed. Please try again later.',
+                500,
+                $e->getMessage()
+            );
         }
-
-        $user = Auth::user();
-        
-        // Delete any existing tokens
-        $user->tokens()->delete();
-        
-        // Create new token
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully logged in',
-            'data' => [
-                'user' => $user,
-                'token' => $token,
-            ]
-        ]);
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully logged out',
-        ]);
+        return ApiResponse::success();
     }
 
     public function user(Request $request)
     {
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'user' => $request->user()
-            ]
-        ]);
+        return ApiResponse::success($request->user());
     }
 } 

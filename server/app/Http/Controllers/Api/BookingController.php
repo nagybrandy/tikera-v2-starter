@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Screening;
@@ -16,9 +17,9 @@ class BookingController extends Controller
      */
     public function index()
     {
-        return Booking::with(['screening.movie', 'screening.room'])
+        return ApiResponse::success(Booking::with(['screening.movie', 'screening.room'])
             ->where('user_id', Auth::id())
-            ->get();
+            ->get());
     }
 
     /**
@@ -42,17 +43,17 @@ class BookingController extends Controller
             
             // Check if screening is in the future
             if ($screening->start_time->isPast()) {
-                return response()->json([
-                    'message' => 'Cannot book tickets for past screenings'
-                ], 422);
+                return ApiResponse::error(
+                    'Cannot book tickets for past screenings',
+                    422);
             }
 
             // Validate seat positions against room dimensions
             foreach ($request->seats as $seat) {
                 if ($seat['row'] > $room->rows || $seat['number'] > $room->seats_per_row) {
-                    return response()->json([
-                        'message' => "Invalid seat position: row {$seat['row']}, number {$seat['number']}"
-                    ], 422);
+                    return ApiResponse::error(
+                        "Invalid seat position: row {$seat['row']}, number {$seat['number']}",
+                        422);
                 }
             }
 
@@ -73,9 +74,9 @@ class BookingController extends Controller
                         
                         if ($bookedSeat['row'] == $requestedSeat['row'] && 
                             $bookedSeat['number'] == $requestedSeat['number']) {
-                            return response()->json([
-                                'message' => "Seat row {$requestedSeat['row']}, number {$requestedSeat['number']} is already taken"
-                            ], 422);
+                            return ApiResponse::error(
+                                "Seat row {$requestedSeat['row']}, number {$requestedSeat['number']} is already taken",
+                            422);
                         }
                     }
                 }
@@ -107,12 +108,12 @@ class BookingController extends Controller
                 'status' => 'confirmed'
             ]);
 
-            return $booking->load(['screening.movie', 'screening.room']);
+            return ApiResponse::success($booking->load(['screening.movie', 'screening.room']));
 
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Booking failed: ' . $e->getMessage()
-            ], 500);
+            return ApiResponse::error(
+                'Booking failed: ' . $e->getMessage(),
+                500);
         }
     }
 
@@ -122,12 +123,12 @@ class BookingController extends Controller
     public function show(Booking $booking)
     {
         if (Auth::id() !== $booking->user_id) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 403);
+            return ApiResponse::error(
+                'Unauthorized',
+                403);
         }
 
-        return $booking->load(['screening.movie', 'screening.room']);
+        return ApiResponse::success($booking->load(['screening.movie', 'screening.room']));
     }
 
     /**
@@ -136,15 +137,15 @@ class BookingController extends Controller
     public function update(Request $request, Booking $booking)
     {
         if (Auth::id() !== $booking->user_id) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 403);
+            return ApiResponse::error(
+                'Unauthorized',
+                403);
         }
 
         if ($booking->screening->start_time->isPast()) {
-            return response()->json([
-                'message' => 'Cannot modify bookings for past screenings'
-            ], 422);
+            return ApiResponse::error(
+                'Cannot modify bookings for past screenings',
+                422);
         }
 
         $request->validate([
@@ -155,7 +156,7 @@ class BookingController extends Controller
             'status' => $request->status
         ]);
 
-        return $booking->load(['screening.movie', 'screening.room']);
+        return ApiResponse::success($booking->load(['screening.movie', 'screening.room']));
     }
 
     /**
@@ -164,19 +165,19 @@ class BookingController extends Controller
     public function destroy(Booking $booking)
     {
         if (Auth::id() !== $booking->user_id) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 403);
+            return ApiResponse::error(
+                'Unauthorized',
+                403);
         }
 
         if ($booking->screening->start_time->isPast()) {
-            return response()->json([
-                'message' => 'Cannot cancel bookings for past screenings'
-            ], 422);
+            return ApiResponse::error(
+                'Cannot cancel bookings for past screenings',
+                422);
         }
 
         $booking->delete();
         
-        return response()->json(null, 204);
+        return ApiResponse::success(null, "OK", 204);
     }
 }

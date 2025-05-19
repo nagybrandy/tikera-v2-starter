@@ -1,11 +1,12 @@
 <?php
 
+use App\Helpers\ApiResponse;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return ['Laravel' => app()->version()];
+    return ApiResponse::success(['Laravel' => app()->version()]);
 });
 
 Route::get('login', function () {
-    return response()->json(['message' => 'Authentication required'], 401);
+    return ApiResponse::error('Authentication required', 401);
 })->name('login');
