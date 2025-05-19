@@ -29,7 +29,7 @@ class ScreeningController extends Controller
         try {
             $request->validate([
                 'movie_id' => 'required|exists:movies,id',
-                'room_id' => 'required|exists:rooms,id',
+                'room_id' => 'exists:rooms,id',
                 'date' => 'required|date',
                 'start_time' => ['required', 'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/']
             ]);
@@ -40,8 +40,13 @@ class ScreeningController extends Controller
             $data['week_number'] = $carbonDate->weekOfYear;
             $data['week_day'] = $carbonDate->isoWeekday();
 
+            // Set default room_id if not provided
+            if (!isset($data['room_id'])) {
+                $data['room_id'] = 1; // Default to Grand Hall
+            }
+
             // Check for time conflicts in the same room (logic may need to be adapted for string time)
-            $conflictingScreenings = Screening::where('room_id', $request->room_id)
+            $conflictingScreenings = Screening::where('room_id', $data['room_id'])
                 ->where('start_time', $request->start_time)
                 ->exists();
 
