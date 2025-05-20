@@ -167,8 +167,8 @@ class DatabaseSeeder extends Seeder
                             'screening_id' => $screening->id,
                             'total_price' => rand(1500, 2500),
                             'status' => 'confirmed',
-                            'seats' => json_encode([['row' => $row, 'seat' => $seat]]),
-                            'ticket_types' => json_encode([['type' => 'adult', 'count' => 1]])
+                            'seats' => [['row' => $row, 'seat' => $seat]],
+                            'ticket_types' => [['type' => 'adult', 'count' => 1]]
                         ]);
                     }
                 }
